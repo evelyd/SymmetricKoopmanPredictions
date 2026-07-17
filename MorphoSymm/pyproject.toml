@@ -1,0 +1,104 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+[tool.hatch.metadata]
+allow-direct-references = true   # We use custom branch of escnn with some developments usefull for this repo
+
+[project]
+name = "morpho-symm"
+version = "0.1.11"
+keywords = ["morphological symmetry", "locomotion", "dynamical systems", "robot symmetries", "symmetry"]
+description = "Tools for the identification, study, and exploitation of morphological symmetries in robotics"
+readme = "README.md"
+requires-python = ">=3.8"
+
+authors = [
+  { name="Daniel Ordoñez-Apraez", email="daniels.ordonez@gmail.com" },
+]
+maintainers = [
+  { name="Daniel Ordoñez-Apraez", email="daniels.ordonez@gmail.com" },
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "hydra-core",
+    "scipy>=1.6",        # Need scipy.spatial.transform API
+    "robot_descriptions",
+    #    "lie-learn>=0.0.2",  # Fix version for compatibility
+    "escnn>=1.0.0",
+    "networkx>=2.5",     # Used to construct ESCNN reps from sets of numpy arrays.
+    "pytest",
+]
+
+[project.scripts]
+    view = "morpho_symm:robot_symmetry_visualization"
+
+[project.optional-dependencies]
+pin = [
+    "pin>=2.6,<3.0",
+    "pybullet",          # TODO: Replace by mujoco.
+]
+
+[project.urls]
+"Homepage" = "https://github.com/Danfoa/MorphoSymm"
+"Bug Tracker" = "https://github.com/Danfoa/MorphoSymm/issues"
+
+[tool.hatch.build]
+include = [
+    "morpho_symm/**",   # Only include necessary package files
+]
+exclude = [
+    ".github/**",        # Exclude GitHub workflows
+    "tests/**",          # Exclude test files
+    "docs/**",           # Exclude documentation files
+    "paper/**",          # Exclude paper scripts.
+#    "*.md",             # Exclude markdown files (e.g., README.md, CONTRIBUTING.md)
+#    "*.yml", "*.yaml",  # Exclude CI/CD configuration files
+#    "*.json",           # Exclude JSON files
+#    "*.csv",            # Exclude CSV files
+    "*.log",             # Exclude log files
+    "*.zip", "*.tar.gz", # Exclude compressed files
+    "*.h5",              # Exclude large data files
+    "*.mat",             # Exclude large data files
+    "*.pkl",             # Exclude pickle files
+#    "*.mp4", "*.avi",   # Exclude video files
+#    "*.png", "*.jpg",   # Exclude image files
+    "__pycache__/**",    # Exclude Python cache files
+]
+
+[tool.ruff]
+line-length = 120
+select = [
+    # pyflakes
+    "F",
+    # pycodestyle
+    "E",
+    "W",
+    # isort
+    "I001",
+    # pydocstyle
+    "D"
+]
+ignore = [
+    "D401",  # good for methods but not for class docstrings
+    "D405",  # British-style section names are also "proper"!
+    "E701",  # short single-line statements are fine
+    "D100",
+]
+
+exclude = [
+    ".git",
+    ".idea",
+    ".venv",
+    "paper",
+]
+
+#fixable = ["A", "B", "C", "D", "E", "F", "G", "I", "N", "Q", "S", "T", "W", "ANN", "ARG", "BLE", "COM", "DJ", "DTZ", "EM", "ERA", "EXE", "FBT", "ICN", "INP", "ISC", "NPY", "PD", "PGH", "PIE", "PL", "PT", "PTH", "PYI", "RET", "RSE", "RUF", "SIM", "SLF", "TCH", "TID", "TRY", "UP", "YTT"]
+
+[tool.ruff.pydocstyle]
+convention = "google"
+

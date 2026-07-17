@@ -1,0 +1,19 @@
+# Hyperparameters shared by all architecture variants we test.
+
+name: ??
+# Dataset related parameters
+augment: False          # Weather to use data-augmentation of the dataset if the system has symmetries.
+# Model hyperparameters
+activation: ELU
+num_layers: 5                                   # Number MLPs' layers (including input and output layers)
+num_hidden_units: 128                           # Number of hidden units in each layer
+batch_norm: False                               # Do not enable this for now.
+bias: True
+constant_function: True                         # Whether to ensure the constant function is on the obs/function space.
+
+
+# Optimization hyperparameters parameters
+lr: 1e-3
+batch_size: 1024
+
+

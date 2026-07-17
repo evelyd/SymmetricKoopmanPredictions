@@ -1,0 +1,13 @@
+*.pickle
+*.DS_Store
+__pycache__/
+
+.idea/
+
+experiments/
+/data/linear_systems/
+#*.html
+
+.vscode/
+
+*.pkl

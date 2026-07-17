@@ -1,0 +1,120 @@
+defaults:
+  - _self_
+  - model: dpnet
+  - system: linear_system
+  - override hydra/launcher: joblib
+
+# Running hyperparameters
+exp_name: test
+seed: -1
+device: 0
+num_workers: 0           # Dataloader workers
+debug: False
+debug_loops: False
+
+# Markov Dynamics Model
+model: dae
+# Dynamical system
+system: linear_system
+
+#run_name:
+# Hydra configuration _________
+hydra:
+  verbose: ${debug}
+  launcher:
+    n_jobs: 1 # ${hydra.sweeper.n_jobs}
+  run:
+    dir: ./experiments/${hydra.job.name}/${system.summary}_${model.summary}_${hydra.job.override_dirname}
+  job:
+    # TODO: Reorganize output dir
+    name: ${exp_name}
+    num: ${seed}
+    chdir: True
+    env_set:
+      XLA_PYTHON_CLIENT_PREALLOCATE: 'false'
+      HYDRA_FULL_ERROR: '1'
+#      CUDA_VISIBLE_DEVICES: ${.device}
+    config:
+      override_dirname:
+        kv_sep: "="
+        item_sep: " "
+        exclude_keys:
+          - model
+          - device
+          - exp_name
+          - model.max_epochs     # Metrics included in model.summary
+          - model.dynamic_regime
+          - model.obs_pred_w
+          - model.orth_w
+          - model.ck_w
+          - model.equivariant
+          - model.max_ck_window_length
+          - model.activation
+          - model.num_layers
+          - model.num_hidden_units
+          - model.lr
+          - model.batch_norm
+          - model.bias
+          - model.explicit_transfer_op
+          - model.use_spectral_score
+          - system.state_dim     # Metrics included in system.summary
+          - system.obs_state_ratio
+          - system.frames_per_state
+          - system.pred_horizon
+          - system.eval_pred_horizon
+          - system.data_path
+          - system.group
+          - system.noise_level
+          - debug
+          - debug_loops
+          - seed
+          - max_epochs
+
+  sweep:
+    dir: ./experiments/${hydra.job.name}/
+    subdir: ${system.summary}_${model.summary}_${hydra.job.override_dirname}
+
+#  job_logging:
+#    version: 1
+#    colorlog: True
+#    root:
+#      handlers: [console, file_error]
+#      level: INFO
+#    handlers:
+#      console:
+#        class: logging.StreamHandler
+#        formatter: simple
+#        stream: ext://sys.stdout
+#      file_error:
+#        class: logging.FileHandler
+#        level: ERROR
+#        formatter: simple
+#        filename: err.log
+#        mode: a
+#    formatters:
+#      simple:
+#        format: '[%(levelname)s][%(name)s] %(message)s'
+
+#  sweeper:
+##    sampler:
+##      _target_: optuna.samplers.TPESampler
+##      seed: 123
+##      consider_prior: true
+##      prior_weight: 1.0
+##      consider_magic_clip: true
+##      consider_endpoints: false
+##      n_startup_trials: 10
+##      n_ei_candidates: 24
+##      multivariate: false
+##    _target_: hydra_plugins.hydra_optuna_sweeper.optuna_sweeper.OptunaS
+#    direction: minimize
+#    study_name: ${exp_name}
+#    storage: null
+#    n_trials: 100
+#    n_jobs: 8
+#    max_failure_rate: 0.1
+#    params:
+#      model.lr: tag(log, interval(0.0001, 0.1))
+#      model.ck_w: tag(log, interval(0.001, 1))
+#      model.orthonormal_w: tag(log, interval(0.001, 1))
+#      model.max_ck_window_length: choice(3, 6, 12)

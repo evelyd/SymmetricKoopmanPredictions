@@ -1,0 +1,5 @@
+defaults:
+  - edae
+
+# bias: False # no bias so that the theoretical consistency of Koopman is fulfilled
+name: EC-DAE
